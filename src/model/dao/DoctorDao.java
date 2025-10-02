@@ -8,7 +8,7 @@ public interface DoctorDao {
 
     void insert(Doctor d);
     Doctor findById(Integer id);
-    Doctor findBySpecialty(String specialty);
+    List<Doctor> findBySpecialty(String specialty);
     List<Doctor> findAll();
     void update(Integer id, String specialty, String email, Integer phone);
     void delete(Integer id);

@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DoctorJDBC implements DoctorDao {
@@ -61,8 +62,40 @@ public class DoctorJDBC implements DoctorDao {
     }
 
     @Override
-    public Doctor findBySpecialty(String specialty) {
-        return null;
+    public List<Doctor> findBySpecialty(String specialty) {
+
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        List<Doctor> list = new ArrayList<>();
+
+        try {
+            st = conn.prepareStatement("SELECT * FROM doctors " +
+                    "WHERE specialty = ?");
+
+            st.setString(1, specialty);
+
+            rs = st.executeQuery();
+
+            while (rs.next()) {
+
+                Integer id = rs.getInt("id");
+                String name = rs.getString("name");
+                Integer crm = rs.getInt("crm");
+                String docSpecialty = rs.getString("specialty");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+
+                list.add(new Doctor(id, name, crm, docSpecialty, phone, email));
+            }
+        }
+        catch (SQLException e) {
+            throw new DBException(e.getMessage());
+        }
+        finally {
+            DBConfig.closeStatement(st);
+            DBConfig.closeResultSet(rs);
+        }
+        return list;
     }
 
     @Override
