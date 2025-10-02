@@ -11,5 +11,6 @@ public class Main {
         System.out.println(doctorDao.findById(1));
 
         System.out.println(doctorDao.findBySpecialty("Pediatria"));
+        System.out.println(doctorDao.findAll());
     }
 }

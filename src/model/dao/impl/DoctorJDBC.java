@@ -100,7 +100,35 @@ public class DoctorJDBC implements DoctorDao {
 
     @Override
     public List<Doctor> findAll() {
-        return List.of();
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        List<Doctor> list = new ArrayList<>();
+
+        try {
+            st = conn.prepareStatement("SELECT * FROM doctors");
+
+            rs = st.executeQuery();
+
+            while (rs.next()) {
+
+                Integer id = rs.getInt("id");
+                String name = rs.getString("name");
+                Integer crm = rs.getInt("crm");
+                String specialty = rs.getString("specialty");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+
+                list.add(new Doctor(id, name, crm, specialty, phone, email));
+            }
+        }
+        catch (SQLException e) {
+            throw new DBException(e.getMessage());
+        }
+        finally {
+            DBConfig.closeStatement(st);
+            DBConfig.closeResultSet(rs);
+        }
+        return list;
     }
 
     @Override
