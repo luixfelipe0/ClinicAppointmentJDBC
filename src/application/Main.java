@@ -1,7 +1,14 @@
 package application;
 
+import model.dao.DaoFactory;
+import model.dao.DoctorDao;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+
+        DoctorDao doctorDao = DaoFactory.createDoctorDao();
+
+        System.out.println(doctorDao.findById(1));
+
     }
 }

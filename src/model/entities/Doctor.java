@@ -6,13 +6,13 @@ public class Doctor {
     private String name;
     private Integer crm;
     private String specialty;
-    private Integer phone;
+    private String phone;
     private String email;
 
     public Doctor() {
     }
 
-    public Doctor(Integer id, String name, Integer crm, String specialty, Integer phone, String email) {
+    public Doctor(Integer id, String name, Integer crm, String specialty, String phone, String email) {
         this.id = id;
         this.name = name;
         this.crm = crm;
@@ -53,11 +53,11 @@ public class Doctor {
         this.specialty = specialty;
     }
 
-    public Integer getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(Integer phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
@@ -67,5 +67,17 @@ public class Doctor {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "Doctor{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", crm=" + crm +
+                ", specialty='" + specialty + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

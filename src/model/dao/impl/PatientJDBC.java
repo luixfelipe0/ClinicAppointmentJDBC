@@ -1,13 +1,11 @@
 package model.dao.impl;
 
-import model.dao.doctorDao;
-import model.dao.patientDao;
-import model.entities.Doctor;
+import model.dao.PatientDao;
 import model.entities.Patient;
 
 import java.util.List;
 
-public class PatientJDBC implements patientDao {
+public class PatientJDBC implements PatientDao {
 
     @Override
     public void insert(Patient p) {

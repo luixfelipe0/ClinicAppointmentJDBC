@@ -4,7 +4,7 @@ import model.entities.Patient;
 
 import java.util.List;
 
-public interface patientDao {
+public interface PatientDao {
 
     void insert(Patient p);
     Patient findById(Integer id);

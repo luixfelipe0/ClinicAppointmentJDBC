@@ -1,16 +1,14 @@
 package model.dao.impl;
 
-import model.dao.appointmentDao;
-import model.dao.patientDao;
+import model.dao.AppointmentDao;
 import model.entities.Appointment;
 import model.entities.Doctor;
-import model.entities.Patient;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-public class AppointmentJDBC implements appointmentDao {
+public class AppointmentJDBC implements AppointmentDao {
 
     @Override
     public void schedule(Appointment a) {

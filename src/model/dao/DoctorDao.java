@@ -1,11 +1,10 @@
 package model.dao;
 
 import model.entities.Doctor;
-import model.entities.Patient;
 
 import java.util.List;
 
-public interface doctorDao {
+public interface DoctorDao {
 
     void insert(Doctor d);
     Doctor findById(Integer id);

@@ -7,13 +7,13 @@ public class Patient {
     private Integer id;
     private String name;
     private Date birthDate;
-    private Integer phone;
+    private String phone;
     private String email;
 
     public Patient() {
     }
 
-    public Patient(Integer id, String name, Date birthDate, Integer phone, String email) {
+    public Patient(Integer id, String name, Date birthDate, String phone, String email) {
         this.id = id;
         this.name = name;
         this.birthDate = birthDate;
@@ -45,11 +45,11 @@ public class Patient {
         this.birthDate = birthDate;
     }
 
-    public Integer getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(Integer phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-public interface appointmentDao {
+public interface AppointmentDao {
 
     void schedule(Appointment a);
     void changeDoctor(Integer id, Doctor newDoctor);
