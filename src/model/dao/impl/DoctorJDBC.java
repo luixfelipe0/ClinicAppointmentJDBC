@@ -5,10 +5,7 @@ import db.DBException;
 import model.dao.DoctorDao;
 import model.entities.Doctor;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +19,40 @@ public class DoctorJDBC implements DoctorDao {
 
     @Override
     public void insert(Doctor d) {
+
+        PreparedStatement st = null;
+
+        try {
+            st = conn.prepareStatement("INSERT INTO doctors " +
+                    "(name, crm, specialty, email, phone) " +
+                    "VALUES " +
+                    "(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+
+            st.setString(1, d.getName());
+            st.setInt(2, d.getCrm());
+            st.setString(3, d.getSpecialty());
+            st.setString(4, d.getEmail());
+            st.setString(5, d.getPhone());
+
+            int rowsAffected = st.executeUpdate();
+
+            if(rowsAffected > 0) {
+                ResultSet rs = st.getGeneratedKeys();
+                if (rs.next()) {
+                   int id = rs.getInt(1);
+                   d.setId(id);
+                }
+                DBConfig.closeResultSet(rs);
+            } else {
+                throw new DBException("Something went wrong. No rows affected");
+            }
+        }
+        catch (SQLException e) {
+            throw new DBException(e.getMessage());
+        }
+        finally {
+            DBConfig.closeStatement(st);
+        }
 
     }
     @Override
