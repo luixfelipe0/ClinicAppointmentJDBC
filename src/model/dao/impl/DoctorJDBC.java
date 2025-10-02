@@ -163,7 +163,30 @@ public class DoctorJDBC implements DoctorDao {
     }
 
     @Override
-    public void update(Integer id, String specialty, String email, Integer phone) {
+    public void update(Integer id, String specialty, String email, String phone) {
+
+        PreparedStatement st = null;
+
+        try {
+            st = conn.prepareStatement(
+                    "UPDATE doctors "
+                            + "SET specialty = COALESCE(?, specialty), email = COALESCE(?, email), phone = COALESCE(?, phone) "
+                            + "WHERE id = ?"
+            );
+
+            st.setString(1, specialty);
+            st.setString(2, email);
+            st.setString(3, phone);
+            st.setInt(4, id);
+
+            st.executeUpdate();
+        }
+        catch (SQLException e) {
+            throw new DBException(e.getMessage());
+        }
+        finally {
+            DBConfig.closeStatement(st);
+        }
 
     }
 
