@@ -16,7 +16,7 @@ public class DaoFactory {
     }
 
     public static PatientDao createPatientDao() {
-        return new PatientJDBC();
+        return new PatientJDBC(DBConfig.getConn());
     }
 
 }

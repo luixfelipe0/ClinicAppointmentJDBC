@@ -10,7 +10,7 @@ public interface PatientDao {
     Patient findById(Integer id);
     Patient findByName(String name);
     List<Patient> findAll();
-    void update(Integer id, String name, String email, Integer phone);
+    void update(Integer id, String name, String email, String phone);
     void delete(Integer id);
 
 }

@@ -193,5 +193,23 @@ public class DoctorJDBC implements DoctorDao {
     @Override
     public void delete(Integer id) {
 
+        PreparedStatement st = null;
+
+        try {
+            st = conn.prepareStatement(
+                    "DELETE FROM doctors "
+                    + "WHERE id = ?"
+            );
+
+            st.setInt(1, id);
+            st.executeUpdate();
+        }
+        catch (SQLException e) {
+            throw new DBException(e.getMessage());
+        }
+        finally {
+            DBConfig.closeStatement(st);
+        }
+
     }
 }
