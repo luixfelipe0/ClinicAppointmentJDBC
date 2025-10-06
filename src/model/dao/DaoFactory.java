@@ -8,7 +8,7 @@ import model.dao.impl.PatientJDBC;
 public class DaoFactory {
 
     public static AppointmentDao createAppointmentDao() {
-        return new AppointmentJDBC();
+        return new AppointmentJDBC(DBConfig.getConn());
     }
 
     public static DoctorDao createDoctorDao() {

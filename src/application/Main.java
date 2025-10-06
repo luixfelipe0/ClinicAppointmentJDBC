@@ -1,11 +1,16 @@
 package application;
 
+import model.dao.AppointmentDao;
 import model.dao.DaoFactory;
 import model.dao.DoctorDao;
 import model.dao.PatientDao;
+import model.entities.Appointment;
 import model.entities.Doctor;
 import model.entities.Patient;
 
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Main {
@@ -13,6 +18,7 @@ public class Main {
 
         DoctorDao doctorDao = DaoFactory.createDoctorDao();
         PatientDao patientDao = DaoFactory.createPatientDao();
+        AppointmentDao appointmentDao = DaoFactory.createAppointmentDao();
 
 //        System.out.println(doctorDao.findById(1));
 //
@@ -28,19 +34,17 @@ public class Main {
 
 //        patientDao.insert(new Patient(null, "Samara Souza", new Date(), "51792316558", "samara.souza@email.com"));
 
-        System.out.println(patientDao.findById(2));
+//        System.out.println(patientDao.findById(2));
+//
+//        System.out.println(patientDao.findByName("Fernanda Rocha"));
+//
+//        System.out.println(patientDao.findAll());
+//
+//        patientDao.update(1, "Lucas Souza", "lucas.souza@email.com", null);
 
-        System.out.println(patientDao.findByName("Fernanda Rocha"));
+//        patientDao.delete(6);
 
-        System.out.println(patientDao.findAll());
-
-        patientDao.update(1, "Lucas Souza", "lucas.souza@email.com", null);
-
-        patientDao.delete(6);
-        patientDao.delete(7);
-        patientDao.delete(8);
-        patientDao.delete(9);
-        patientDao.delete(10);
+    appointmentDao.schedule(new Appointment(null, patientDao.findById(1), doctorDao.findById(1), LocalDateTime.of(2025, 10, 5, 9, 30), "Dor na lombar"));
 
     }
 }

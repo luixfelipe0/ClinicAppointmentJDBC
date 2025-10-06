@@ -8,19 +8,17 @@ public class Appointment {
     private Integer id;
     private Patient patient;
     private Doctor doctor;
-    private Date appointmentDate;
-    private LocalDateTime appointmentTime;
+    private LocalDateTime dateTime;
     private String reason;
 
     public Appointment() {
     }
 
-    public Appointment(Integer id, Patient patient, Doctor doctor, Date appointmentDate, LocalDateTime appointmentTime, String reason) {
+    public Appointment(Integer id, Patient patient, Doctor doctor, LocalDateTime dateTime, String reason) {
         this.id = id;
         this.patient = patient;
         this.doctor = doctor;
-        this.appointmentDate = appointmentDate;
-        this.appointmentTime = appointmentTime;
+        this.dateTime = dateTime;
         this.reason = reason;
     }
 
@@ -48,20 +46,12 @@ public class Appointment {
         this.doctor = doctor;
     }
 
-    public Date getAppointmentDate() {
-        return appointmentDate;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
-    public void setAppointmentDate(Date appointmentDate) {
-        this.appointmentDate = appointmentDate;
-    }
-
-    public LocalDateTime getAppointmentTime() {
-        return appointmentTime;
-    }
-
-    public void setAppointmentTime(LocalDateTime appointmentTime) {
-        this.appointmentTime = appointmentTime;
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
     public String getReason() {
