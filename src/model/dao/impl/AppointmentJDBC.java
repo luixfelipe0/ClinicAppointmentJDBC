@@ -3,8 +3,12 @@ package model.dao.impl;
 import db.DBConfig;
 import db.DBException;
 import model.dao.AppointmentDao;
+import model.dao.DaoFactory;
+import model.dao.DoctorDao;
+import model.dao.PatientDao;
 import model.entities.Appointment;
 import model.entities.Doctor;
+import model.entities.Patient;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -13,10 +17,14 @@ import java.util.List;
 
 public class AppointmentJDBC implements AppointmentDao {
 
-    private static Connection conn;
+    private final Connection conn;
+    private final DoctorDao docDao;
+    private final PatientDao patDao;
 
     public AppointmentJDBC(Connection conn) {
-        AppointmentJDBC.conn = conn;
+        this.conn = conn;
+        this.docDao = DaoFactory.createDoctorDao(conn);
+        this.patDao = DaoFactory.createPatientDao(conn);
     }
 
     @Override
@@ -48,7 +56,7 @@ public class AppointmentJDBC implements AppointmentDao {
                 }
                 DBConfig.closeResultSet(rs);
             } else {
-                throw new DBException("Sometihng went wrong. No rows affected.");
+                throw new DBException("Something went wrong. No rows affected.");
             }
 
         }
@@ -78,6 +86,46 @@ public class AppointmentJDBC implements AppointmentDao {
 
     @Override
     public Appointment findById(Integer id) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            st = conn.prepareStatement("SELECT a.*, p.name AS patient_name, d.name AS doctor_name " +
+                    "FROM appointments a " +
+                    "JOIN patients p ON patient_id = p.id " +
+                    "JOIN doctors d ON doctor_id = d.id " +
+                    "WHERE a.id = ?");
+
+            st.setInt(1, id);
+
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+
+                Integer appointmentId = rs.getInt("id");
+                Integer patientId = rs.getInt("patient_id");
+                Integer doctorId = rs.getInt("doctor_id");
+                String reason = rs.getString("reason");
+                LocalDateTime dateTime = rs.getTimestamp("appointment_datetime").toLocalDateTime();
+
+                Patient patient = patDao.findById(patientId);
+                Doctor doctor = docDao.findById(doctorId);
+
+                if (patient == null || doctor == null) {
+                    throw new DBException("Patient or Doctor not found.");
+                }
+
+                return new Appointment(appointmentId, patient, doctor, dateTime, reason);
+            }
+        }
+        catch (SQLException e) {
+            throw new DBException(e.getMessage());
+        }
+        finally {
+            DBConfig.closeStatement(st);
+            DBConfig.closeResultSet(rs);
+        }
+
         return null;
     }
 

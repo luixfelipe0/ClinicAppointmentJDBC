@@ -61,4 +61,15 @@ public class Appointment {
     public void setReason(String reason) {
         this.reason = reason;
     }
+
+    @Override
+    public String toString() {
+        return "Appointment{" +
+                "id=" + id +
+                ", patient=" + patient +
+                ", doctor=" + doctor +
+                ", dateTime=" + dateTime +
+                ", reason='" + reason + '\'' +
+                '}';
+    }
 }

@@ -5,18 +5,20 @@ import model.dao.impl.AppointmentJDBC;
 import model.dao.impl.DoctorJDBC;
 import model.dao.impl.PatientJDBC;
 
+import java.sql.Connection;
+
 public class DaoFactory {
 
-    public static AppointmentDao createAppointmentDao() {
-        return new AppointmentJDBC(DBConfig.getConn());
+    public static AppointmentDao createAppointmentDao(Connection conn) {
+        return new AppointmentJDBC(conn);
     }
 
-    public static DoctorDao createDoctorDao() {
-        return new DoctorJDBC(DBConfig.getConn());
+    public static DoctorDao createDoctorDao(Connection conn) {
+        return new DoctorJDBC(conn);
     }
 
-    public static PatientDao createPatientDao() {
-        return new PatientJDBC(DBConfig.getConn());
+    public static PatientDao createPatientDao(Connection conn) {
+        return new PatientJDBC(conn);
     }
 
 }
