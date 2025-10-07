@@ -12,10 +12,10 @@ import java.util.List;
 
 public class PatientJDBC implements PatientDao {
 
-    private static Connection conn;
+    private final Connection conn;
 
     public PatientJDBC(Connection conn) {
-        PatientJDBC.conn = conn;
+        this.conn = conn;
     }
 
     @Override

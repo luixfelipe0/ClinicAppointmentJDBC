@@ -11,10 +11,10 @@ import java.util.List;
 
 public class DoctorJDBC implements DoctorDao {
 
-    private static Connection conn;
+    private final Connection conn;
 
     public DoctorJDBC(Connection conn) {
-        DoctorJDBC.conn = conn;
+        this.conn = conn;
     }
 
     @Override

@@ -258,65 +258,42 @@ public class AppointmentJDBC implements AppointmentDao {
     @Override
     public List<Appointment> findByDate(LocalDate date) {
 
-//        PreparedStatement st = null;
-//        ResultSet rs = null;
-//        List<Appointment> list = new ArrayList<>();
-//
-//        try {
-//            st = conn.prepareStatement(
-//                    "SELECT a.*, p.name AS patient_name, d.name AS doctor_name "
-//                    + "FROM appointments a "
-//                    + "JOIN patients p ON a.patient_id = p.id "
-//                    + "JOIN doctors d ON a.doctor_id = d.id "
-//                    + "WHERE DATE(a.appointment_datetime) = ?"
-//
-//            );
-//
-//            st.setDate(1, java.sql.Date.valueOf(date));
-//
-//            rs = st.executeQuery();
-//
-//            while (rs.next()) {
-//
-//                while (rs.next()) {
-//                    Patient patient = new Patient(
-//                            rs.getInt("patient_id"),
-//                            rs.getString("patient_name"),
-//                            rs.getDate("birth_date").toLocalDate(),
-//                            rs.getString("patient_phone"),
-//                            rs.getString("patient_email")
-//                    );
-//
-//                    Doctor doctor = new Doctor(
-//                            rs.getInt("doctor_id"),
-//                            rs.getString("doctor_name"),
-//                            rs.getInt("crm"),
-//                            rs.getString("specialty"),
-//                            rs.getString("doctor_email"),
-//                            rs.getString("doctor_phone")
-//                    );
-//
-//                    Appointment appointment = new Appointment(
-//                            rs.getInt("appointment_id"),
-//                            patient,
-//                            doctor,
-//                            rs.getTimestamp("appointment_datetime").toLocalDateTime(),
-//                            rs.getString("reason")
-//                    );
-//
-//                    list.add(appointment);
-//                }
-//            }
-//        }
-//        catch (SQLException e) {
-//            throw new DBException(e.getMessage());
-//        }
-//        finally {
-//            DBConfig.closeStatement(st);
-//            DBConfig.closeResultSet(rs);
-//        }
-//        return list;
-        return List.of();
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        List<Appointment> list = new ArrayList<>();
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT * FROM appointments "
+                    + "WHERE date(appointment_datetime) = ? "
+            );
+
+            st.setDate(1, java.sql.Date.valueOf(date));
+
+            rs = st.executeQuery();
+
+
+            while (rs.next()) {
+                Patient patient = patDao.findById(rs.getInt("patient_id"));
+                Doctor doctor = docDao.findById(rs.getInt("doctor_id"));
+
+                list.add(new Appointment(
+                        rs.getInt("id"),
+                        patient,
+                        doctor,
+                        rs.getTimestamp("appointment_datetime").toLocalDateTime(),
+                        rs.getString("reason")
+                        ));
+            }
+        }
+        catch (SQLException e) {
+            throw new DBException(e.getMessage());
+        }
+        finally {
+            DBConfig.closeStatement(st);
+            DBConfig.closeResultSet(rs);
+        }
+        return list;
     }
 
     @Override
