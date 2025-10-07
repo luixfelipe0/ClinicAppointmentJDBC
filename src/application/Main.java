@@ -6,14 +6,9 @@ import model.dao.DaoFactory;
 import model.dao.DoctorDao;
 import model.dao.PatientDao;
 import model.entities.Appointment;
-import model.entities.Doctor;
-import model.entities.Patient;
 
 import java.sql.Connection;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class Main {
     public static void main(String[] args) {
@@ -48,9 +43,15 @@ public class Main {
 
 //        patientDao.delete(6);
 
-//    appointmentDao.schedule(new Appointment(null, patientDao.findById(1), doctorDao.findById(1), LocalDateTime.of(2025, 10, 5, 9, 30), "Dor na lombar"));
+    appointmentDao.schedule(new Appointment(null, patientDao.findById(1), doctorDao.findById(1), LocalDateTime.of(2025, 10, 5, 9, 30), "Dor na lombar"));
 
         System.out.println(appointmentDao.findById(9));
+        appointmentDao.changeDoctor(5, 3);
+
+        appointmentDao.changeDateTime(5, LocalDateTime.of(2025, 10, 5, 10, 30));
+
+        System.out.println(appointmentDao.findByPatient(1));
+        System.out.println(appointmentDao.findByDoctor(3));
 
     }
 }

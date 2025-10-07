@@ -11,7 +11,9 @@ import model.entities.Doctor;
 import model.entities.Patient;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -70,17 +72,63 @@ public class AppointmentJDBC implements AppointmentDao {
     }
 
     @Override
-    public void changeDoctor(Integer id, Doctor newDoctor) {
+    public void changeDoctor(Integer appointmentId, Integer newDoctorId) {
 
+        PreparedStatement st = null;
+
+        try {
+            st = conn.prepareStatement(
+                    "UPDATE appointments "
+                    + "SET doctor_id = ? "
+                    + "WHERE id = ?"
+            );
+
+            if (docDao.findById(newDoctorId) == null || findById(appointmentId) == null) {
+                throw new DBException("An error occurred, Doctor or appointment does not exist.");
+            }
+
+            st.setInt(1, newDoctorId);
+            st.setInt(2, appointmentId);
+
+            st.executeUpdate();
+
+        }
+        catch (SQLException e) {
+            throw new DBException(e.getMessage());
+        }
+        finally {
+            DBConfig.closeStatement(st);
+        }
     }
 
     @Override
-    public void changeDate(Integer id, Date newDate) {
+    public void changeDateTime(Integer id, LocalDateTime newDate) {
+        PreparedStatement st = null;
 
-    }
+        try {
 
-    @Override
-    public void changeTime(Integer id, LocalDateTime newTime) {
+            st = conn.prepareStatement(
+                    "UPDATE appointments "
+                    + "SET appointment_datetime = ? "
+                    + "WHERE id = ?"
+            );
+
+            if (findById(id) == null) {
+                throw new DBException("Appointment not found");
+            }
+
+            st.setTimestamp(1, Timestamp.valueOf(newDate));
+            st.setInt(2, id);
+
+            st.executeUpdate();
+
+        }
+        catch (SQLException e) {
+            throw new DBException(e.getMessage());
+        }
+        finally {
+            DBConfig.closeStatement(st);
+        }
 
     }
 
@@ -111,10 +159,6 @@ public class AppointmentJDBC implements AppointmentDao {
                 Patient patient = patDao.findById(patientId);
                 Doctor doctor = docDao.findById(doctorId);
 
-                if (patient == null || doctor == null) {
-                    throw new DBException("Patient or Doctor not found.");
-                }
-
                 return new Appointment(appointmentId, patient, doctor, dateTime, reason);
             }
         }
@@ -131,21 +175,170 @@ public class AppointmentJDBC implements AppointmentDao {
 
     @Override
     public List<Appointment> findByPatient(Integer id) {
-        return List.of();
+
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        List<Appointment> list = new ArrayList<>();
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT * FROM appointments "
+                    + "WHERE patient_id = ?"
+            );
+
+            st.setInt(1, id);
+
+            rs = st.executeQuery();
+
+            while (rs.next()) {
+
+                Integer appId = rs.getInt("id");
+                Integer patientId = rs.getInt("patient_id");
+                Integer docId = rs.getInt("doctor_id");
+                String reason = rs.getString("reason");
+                LocalDateTime dateTime = rs.getTimestamp("appointment_datetime").toLocalDateTime();
+
+                Patient patient = patDao.findById(patientId);
+                Doctor doctor = docDao.findById(docId);
+
+                list.add(new Appointment(appId, patient, doctor, dateTime, reason));
+            }
+        }
+        catch (SQLException e) {
+            throw new DBException(e.getMessage());
+        }
+        finally {
+            DBConfig.closeStatement(st);
+            DBConfig.closeResultSet(rs);
+        }
+        return list;
     }
 
     @Override
     public List<Appointment> findByDoctor(Integer id) {
-        return List.of();
+
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        List<Appointment> list = new ArrayList<>();
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT * FROM appointments "
+                            + "WHERE doctor_id = ?"
+            );
+
+            st.setInt(1, id);
+
+            rs = st.executeQuery();
+
+            while (rs.next()) {
+
+                Integer appId = rs.getInt("id");
+                Integer patientId = rs.getInt("patient_id");
+                Integer docId = rs.getInt("doctor_id");
+                String reason = rs.getString("reason");
+                LocalDateTime dateTime = rs.getTimestamp("appointment_datetime").toLocalDateTime();
+
+                Patient patient = patDao.findById(patientId);
+                Doctor doctor = docDao.findById(docId);
+
+                list.add(new Appointment(appId, patient, doctor, dateTime, reason));
+            }
+        }
+        catch (SQLException e) {
+            throw new DBException(e.getMessage());
+        }
+        finally {
+            DBConfig.closeStatement(st);
+            DBConfig.closeResultSet(rs);
+        }
+        return list;
     }
 
     @Override
-    public List<Appointment> findByDate(Date date) {
+    public List<Appointment> findByDate(LocalDate date) {
+
+//        PreparedStatement st = null;
+//        ResultSet rs = null;
+//        List<Appointment> list = new ArrayList<>();
+//
+//        try {
+//            st = conn.prepareStatement(
+//                    "SELECT a.*, p.name AS patient_name, d.name AS doctor_name "
+//                    + "FROM appointments a "
+//                    + "JOIN patients p ON a.patient_id = p.id "
+//                    + "JOIN doctors d ON a.doctor_id = d.id "
+//                    + "WHERE DATE(a.appointment_datetime) = ?"
+//
+//            );
+//
+//            st.setDate(1, java.sql.Date.valueOf(date));
+//
+//            rs = st.executeQuery();
+//
+//            while (rs.next()) {
+//
+//                while (rs.next()) {
+//                    Patient patient = new Patient(
+//                            rs.getInt("patient_id"),
+//                            rs.getString("patient_name"),
+//                            rs.getDate("birth_date").toLocalDate(),
+//                            rs.getString("patient_phone"),
+//                            rs.getString("patient_email")
+//                    );
+//
+//                    Doctor doctor = new Doctor(
+//                            rs.getInt("doctor_id"),
+//                            rs.getString("doctor_name"),
+//                            rs.getInt("crm"),
+//                            rs.getString("specialty"),
+//                            rs.getString("doctor_email"),
+//                            rs.getString("doctor_phone")
+//                    );
+//
+//                    Appointment appointment = new Appointment(
+//                            rs.getInt("appointment_id"),
+//                            patient,
+//                            doctor,
+//                            rs.getTimestamp("appointment_datetime").toLocalDateTime(),
+//                            rs.getString("reason")
+//                    );
+//
+//                    list.add(appointment);
+//                }
+//            }
+//        }
+//        catch (SQLException e) {
+//            throw new DBException(e.getMessage());
+//        }
+//        finally {
+//            DBConfig.closeStatement(st);
+//            DBConfig.closeResultSet(rs);
+//        }
+//        return list;
         return List.of();
     }
 
     @Override
     public void cancelAppointment(Integer id) {
+
+        PreparedStatement st = null;
+
+        try {
+            st = conn.prepareStatement(
+                    "DELETE FROM appointments "
+                    + "WHERE id = ?"
+            );
+
+            st.setInt(1, id);
+            st.executeUpdate();
+        }
+        catch (SQLException e) {
+            throw new DBException(e.getMessage());
+        }
+        finally {
+            DBConfig.closeStatement(st);
+        }
 
     }
 }
